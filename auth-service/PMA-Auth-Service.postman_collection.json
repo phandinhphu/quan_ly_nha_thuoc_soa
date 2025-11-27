@@ -1,0 +1,199 @@
+{
+	"info": {
+		"_postman_id": "auth-service-collection",
+		"name": "PMA Auth Service API",
+		"description": "Collection các API cho Auth Service của PMA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth APIs",
+			"item": [
+				{
+					"name": "Register - Đăng ký tài khoản",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tenDangNhap\": \"admin\",\n    \"matKhau\": \"admin123\",\n    \"maNV\": \"NV001\",\n    \"hoTen\": \"Nguyễn Văn A\",\n    \"gioiTinh\": \"Nam\",\n    \"ngaySinh\": \"1990-01-01\",\n    \"soDienThoai\": \"0912345678\",\n    \"diaChi\": \"Hà Nội\",\n    \"vaiTro\": \"ADMIN\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "API đăng ký tài khoản mới. Tạo cả nhân viên và tài khoản, trả về JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Đăng nhập",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tenDangNhap\": \"admin\",\n    \"matKhau\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "API đăng nhập. Xác thực tài khoản và trả về JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Token - POST (Body)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9...\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/auth/verify",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"auth",
+								"verify"
+							]
+						},
+						"description": "API xác thực token (gửi token trong body). Sử dụng cho các service khác để verify token."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Token - GET (Header)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9...",
+								"description": "Thay token thực tế vào đây"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/api/auth/verify",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"auth",
+								"verify"
+							]
+						},
+						"description": "API xác thực token (gửi token trong Authorization header). Alternative method cho verify token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/actuator/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"actuator",
+								"health"
+							]
+						},
+						"description": "Kiểm tra trạng thái health của service."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "H2 Database Console",
+			"item": [
+				{
+					"name": "H2 Console (Browser)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/h2-console",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"h2-console"
+							]
+						},
+						"description": "Mở H2 Console để xem database. Thông tin kết nối:\n- JDBC URL: jdbc:h2:mem:authdb\n- Username: sa\n- Password: (để trống)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8081",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

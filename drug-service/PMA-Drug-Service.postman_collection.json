@@ -1,0 +1,687 @@
+{
+	"info": {
+		"_postman_id": "drug-service-collection",
+		"name": "PMA Drug Service API",
+		"description": "Collection các API cho Drug Service của PMA. Yêu cầu token từ Auth Service để truy cập các API.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Loại Thuốc APIs",
+			"item": [
+				{
+					"name": "Tạo Loại Thuốc",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": "Token từ auth-service (ADMIN hoặc MANAGER)"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"maLoai\": \"LT001\",\n    \"tenLoai\": \"Thuốc kháng sinh\",\n    \"moTa\": \"Các loại thuốc kháng sinh\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"categories"
+							]
+						},
+						"description": "Tạo loại thuốc mới. Yêu cầu role ADMIN hoặc MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Lấy Danh Sách Loại Thuốc",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"categories"
+							]
+						},
+						"description": "Lấy danh sách tất cả loại thuốc."
+					},
+					"response": []
+				},
+				{
+					"name": "Lấy Chi Tiết Loại Thuốc",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/categories/LT001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"categories",
+								"LT001"
+							]
+						},
+						"description": "Lấy thông tin chi tiết của một loại thuốc."
+					},
+					"response": []
+				},
+				{
+					"name": "Cập Nhật Loại Thuốc",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"maLoai\": \"LT001\",\n    \"tenLoai\": \"Kháng sinh\",\n    \"moTa\": \"Các loại thuốc kháng sinh cập nhật\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/categories/LT001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"categories",
+								"LT001"
+							]
+						},
+						"description": "Cập nhật thông tin loại thuốc. Yêu cầu role ADMIN hoặc MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Xóa Loại Thuốc",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/categories/LT001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"categories",
+								"LT001"
+							]
+						},
+						"description": "Xóa loại thuốc. Yêu cầu role ADMIN."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Đơn Vị Tính APIs",
+			"item": [
+				{
+					"name": "Tạo Đơn Vị Tính",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"maDonVi\": \"DV001\",\n    \"tenDonVi\": \"Viên\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/units",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"units"
+							]
+						},
+						"description": "Tạo đơn vị tính mới. Yêu cầu role ADMIN hoặc MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Lấy Danh Sách Đơn Vị Tính",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/units",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"units"
+							]
+						},
+						"description": "Lấy danh sách tất cả đơn vị tính."
+					},
+					"response": []
+				},
+				{
+					"name": "Lấy Chi Tiết Đơn Vị Tính",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/units/DV001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"units",
+								"DV001"
+							]
+						},
+						"description": "Lấy thông tin chi tiết của một đơn vị tính."
+					},
+					"response": []
+				},
+				{
+					"name": "Cập Nhật Đơn Vị Tính",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"maDonVi\": \"DV001\",\n    \"tenDonVi\": \"Hộp\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/units/DV001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"units",
+								"DV001"
+							]
+						},
+						"description": "Cập nhật thông tin đơn vị tính. Yêu cầu role ADMIN hoặc MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Xóa Đơn Vị Tính",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/units/DV001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"units",
+								"DV001"
+							]
+						},
+						"description": "Xóa đơn vị tính. Yêu cầu role ADMIN."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Thuốc APIs",
+			"item": [
+				{
+					"name": "Tạo Thuốc",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"maThuoc\": \"T001\",\n    \"tenThuoc\": \"Paracetamol 500mg\",\n    \"maLoai\": \"LT001\",\n    \"maDonVi\": \"DV001\",\n    \"giaNhap\": 50000,\n    \"giaBan\": 75000,\n    \"hanSuDung\": \"2025-12-31\",\n    \"nhaSanXuat\": \"Dược phẩm ABC\",\n    \"soLuongTon\": 100,\n    \"moTa\": \"Thuốc giảm đau, hạ sốt\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/drugs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs"
+							]
+						},
+						"description": "Tạo thuốc mới. Yêu cầu role ADMIN hoặc MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Lấy Danh Sách Thuốc",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs"
+							]
+						},
+						"description": "Lấy danh sách tất cả thuốc."
+					},
+					"response": []
+				},
+				{
+					"name": "Lấy Chi Tiết Thuốc",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/T001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"T001"
+							]
+						},
+						"description": "Lấy thông tin chi tiết của một thuốc."
+					},
+					"response": []
+				},
+				{
+					"name": "Tìm Kiếm Thuốc Theo Tên",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/search?name=Para",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Para"
+								}
+							]
+						},
+						"description": "Tìm kiếm thuốc theo tên (tìm kiếm gần đúng)."
+					},
+					"response": []
+				},
+				{
+					"name": "Lấy Thuốc Theo Loại",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/category/LT001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"category",
+								"LT001"
+							]
+						},
+						"description": "Lấy danh sách thuốc theo loại."
+					},
+					"response": []
+				},
+				{
+					"name": "Lấy Thuốc Sắp Hết Hàng",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/low-stock?threshold=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"low-stock"
+							],
+							"query": [
+								{
+									"key": "threshold",
+									"value": "10",
+									"description": "Ngưỡng cảnh báo (mặc định: 10)"
+								}
+							]
+						},
+						"description": "Lấy danh sách thuốc có số lượng tồn <= ngưỡng. Yêu cầu role ADMIN hoặc MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Lấy Thuốc Sắp Hết Hạn",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/expiring?daysAhead=30",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"expiring"
+							],
+							"query": [
+								{
+									"key": "daysAhead",
+									"value": "30",
+									"description": "Số ngày trước (mặc định: 30)"
+								}
+							]
+						},
+						"description": "Lấy danh sách thuốc sắp hết hạn trong N ngày tới. Yêu cầu role ADMIN hoặc MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Cập Nhật Thuốc",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"maThuoc\": \"T001\",\n    \"tenThuoc\": \"Paracetamol 500mg\",\n    \"maLoai\": \"LT001\",\n    \"maDonVi\": \"DV001\",\n    \"giaNhap\": 55000,\n    \"giaBan\": 80000,\n    \"hanSuDung\": \"2025-12-31\",\n    \"nhaSanXuat\": \"Dược phẩm ABC\",\n    \"moTa\": \"Thuốc giảm đau, hạ sốt - cập nhật\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/T001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"T001"
+							]
+						},
+						"description": "Cập nhật thông tin thuốc. Yêu cầu role ADMIN hoặc MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Cập Nhật Tồn Kho",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"maThuoc\": \"T001\",\n    \"soLuong\": 50\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/T001/stock",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"T001",
+								"stock"
+							]
+						},
+						"description": "Cập nhật số lượng tồn kho (tăng/giảm). Số lượng dương = nhập thêm, số lượng âm = xuất bớt."
+					},
+					"response": []
+				},
+				{
+					"name": "Xóa Thuốc",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8082/api/drugs/T001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"api",
+								"drugs",
+								"T001"
+							]
+						},
+						"description": "Xóa thuốc. Yêu cầu role ADMIN."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8082/actuator/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"actuator",
+								"health"
+							]
+						},
+						"description": "Kiểm tra trạng thái health của service."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8082",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string",
+			"description": "Token từ auth-service. Lấy từ API login hoặc register của auth-service."
+		}
+	]
+}

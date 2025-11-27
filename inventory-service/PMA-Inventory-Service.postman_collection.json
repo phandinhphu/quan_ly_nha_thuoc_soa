@@ -1,0 +1,474 @@
+{
+	"info": {
+		"name": "PMA Inventory Service",
+		"description": "API Collection for Inventory Service - Pharmacy Management Application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8083",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "health"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Warehouse (Kho)",
+			"item": [
+				{
+					"name": "Create Warehouse",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"maKho\": \"KHO001\",\n  \"tenKho\": \"Kho Trung Tâm\",\n  \"diaChi\": \"123 Nguyễn Văn Linh, Q7, TP.HCM\",\n  \"moTa\": \"Kho chính lưu trữ thuốc\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/warehouses",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "warehouses"]
+						}
+					}
+				},
+				{
+					"name": "Get All Warehouses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/warehouses",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "warehouses"]
+						}
+					}
+				},
+				{
+					"name": "Get Warehouse By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/warehouses/KHO001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "warehouses", "KHO001"]
+						}
+					}
+				},
+				{
+					"name": "Update Warehouse",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"maKho\": \"KHO001\",\n  \"tenKho\": \"Kho Trung Tâm Updated\",\n  \"diaChi\": \"123 Nguyễn Văn Linh, Q7, TP.HCM\",\n  \"moTa\": \"Kho chính cập nhật\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/warehouses/KHO001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "warehouses", "KHO001"]
+						}
+					}
+				},
+				{
+					"name": "Delete Warehouse",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/warehouses/KHO001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "warehouses", "KHO001"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Inventory History (Lịch Sử Tồn)",
+			"item": [
+				{
+					"name": "Create Inventory History",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"maThuoc\": \"PARA001\",\n  \"soLuongThayDoi\": 50,\n  \"lyDo\": \"Nhập hàng từ nhà cung cấp\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory-history",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "inventory-history"]
+						}
+					}
+				},
+				{
+					"name": "Get All Inventory History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory-history",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "inventory-history"]
+						}
+					}
+				},
+				{
+					"name": "Get Inventory History By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory-history/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "inventory-history", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Inventory History By Drug",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory-history/drug/PARA001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "inventory-history", "drug", "PARA001"]
+						}
+					}
+				},
+				{
+					"name": "Get Recent Inventory History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory-history/recent",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "inventory-history", "recent"]
+						}
+					}
+				},
+				{
+					"name": "Get Inventory History By Date Range",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory-history/date-range?start=2025-01-01T00:00:00&end=2025-12-31T23:59:59",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "inventory-history", "date-range"],
+							"query": [
+								{
+									"key": "start",
+									"value": "2025-01-01T00:00:00"
+								},
+								{
+									"key": "end",
+									"value": "2025-12-31T23:59:59"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Inventory History",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory-history/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "inventory-history", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Stock Alerts (Cảnh Báo Tồn)",
+			"item": [
+				{
+					"name": "Create Stock Alert",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"maThuoc\": \"PARA001\",\n  \"soLuongToiThieu\": 10,\n  \"soLuongHienTai\": 100\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/stock-alerts",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "stock-alerts"]
+						}
+					}
+				},
+				{
+					"name": "Get All Stock Alerts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/stock-alerts",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "stock-alerts"]
+						}
+					}
+				},
+				{
+					"name": "Get Stock Alert By Drug",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/stock-alerts/PARA001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "stock-alerts", "PARA001"]
+						}
+					}
+				},
+				{
+					"name": "Get Low Stock Alerts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/stock-alerts/low-stock",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "stock-alerts", "low-stock"]
+						}
+					}
+				},
+				{
+					"name": "Get Stock Alerts By Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/stock-alerts/status/SAP_HET",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "stock-alerts", "status", "SAP_HET"]
+						}
+					}
+				},
+				{
+					"name": "Update Stock Alert",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"maThuoc\": \"PARA001\",\n  \"soLuongToiThieu\": 15,\n  \"soLuongHienTai\": 80\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/stock-alerts/PARA001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "stock-alerts", "PARA001"]
+						}
+					}
+				},
+				{
+					"name": "Update Current Stock",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/stock-alerts/PARA001/current-stock?soLuongHienTai=50",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "stock-alerts", "PARA001", "current-stock"],
+							"query": [
+								{
+									"key": "soLuongHienTai",
+									"value": "50"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Stock Alert",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/stock-alerts/PARA001",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "stock-alerts", "PARA001"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

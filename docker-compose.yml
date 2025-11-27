@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  eureka-server:
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
+    container_name: pma-eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - pma-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    container_name: pma-auth-service
+    ports:
+      - "8081:8081"
+    networks:
+      - pma-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=auth-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    restart: on-failure
+
+  drug-service:
+    build:
+      context: .
+      dockerfile: drug-service/Dockerfile
+    container_name: pma-drug-service
+    ports:
+      - "8082:8082"
+    networks:
+      - pma-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=drug-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    restart: on-failure
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: inventory-service/Dockerfile
+    container_name: pma-inventory-service
+    ports:
+      - "8083:8083"
+    networks:
+      - pma-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=inventory-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+    restart: on-failure
+
+  supplier-service:
+    build:
+      context: .
+      dockerfile: supplier-service/Dockerfile
+    container_name: pma-supplier-service
+    ports:
+      - "8084:8084"
+    networks:
+      - pma-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=supplier-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      drug-service:
+        condition: service_started
+      inventory-service:
+        condition: service_started
+    restart: on-failure
+
+networks:
+  pma-network:
+    driver: bridge
