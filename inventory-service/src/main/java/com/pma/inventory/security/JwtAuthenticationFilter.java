@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,32 +33,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         String authHeader = request.getHeader("Authorization");
         
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
-        try {
-            Map<String, Object> verifyResponse = authServiceClient.verifyToken(authHeader);
-            
-            Map<String, Object> data = (Map<String, Object>) verifyResponse.get("data");
-            String username = (String) data.get("username");
-            List<String> roles = (List<String>) data.get("roles");
-            
-            List<SimpleGrantedAuthority> authorities = roles.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
-            
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    username, null, authorities);
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-            
-            log.info("User {} authenticated successfully with roles: {}", username, roles);
-            
-        } catch (Exception e) {
-            log.error("Lỗi xác thực JWT: {}", e.getMessage());
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        	String token = authHeader.substring(7);
+        	
+        	try {
+        		
+        		Map<String, Object> verifyResponse = authServiceClient.verifyToken(token);
+        		
+        		Map<String, Object> data = (Map<String, Object>) verifyResponse.get("data");
+        		String username = (String) data.get("tenDangNhap");
+        		String vaiTro = (String) data.get("vaiTro");
+        		
+        		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        				username, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + vaiTro)));
+        		authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        		
+        		SecurityContextHolder.getContext().setAuthentication(authToken);
+        		
+        		log.info("User {} authenticated successfully with roles: {}", username, vaiTro);
+        		
+        	} catch (Exception e) {
+        		log.error("Lỗi xác thực JWT: {}", e.getMessage());
+        	}
         }
         
         filterChain.doFilter(request, response);

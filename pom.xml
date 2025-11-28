@@ -55,5 +55,6 @@
         <module>drug-service</module>
         <module>inventory-service</module>
         <module>supplier-service</module>
+        <module>api-gateway</module>
     </modules>
 </project>

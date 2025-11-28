@@ -25,7 +25,7 @@ public class InventoryServiceClient {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("Authorization", token);
+            headers.set("Authorization", "Bearer " + token);
 
             Map<String, Object> body = new HashMap<>();
             body.put("maThuoc", maThuoc);

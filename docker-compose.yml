@@ -17,6 +17,23 @@ services:
       retries: 5
       start_period: 40s
 
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: pma-api-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - pma-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=api-gateway
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    restart: on-failure
+
   auth-service:
     build:
       context: .

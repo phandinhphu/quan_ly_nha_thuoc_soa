@@ -1,0 +1,56 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+        - id: drug-service
+          uri: lb://drug-service
+          predicates:
+            - Path=/api/drugs/**
+        - id: inventory-history-service
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/inventory-history/**
+        - id: warehouses-service
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/warehouses/**
+        - id: stock-alerts-service
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/stock-alerts/**
+        - id: supplier-service
+          uri: lb://supplier-service
+          predicates:
+            - Path=/api/suppliers/**
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    hostname: ${HOSTNAME:localhost}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,gateway
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    com.soa.gateway: INFO
