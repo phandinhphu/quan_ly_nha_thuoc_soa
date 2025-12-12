@@ -127,4 +127,10 @@ public class AuthService {
                 taiKhoan.getTrangThai()
         );
     }
+    
+    @Transactional(readOnly = true)
+    public NhanVien getNhanVienByMaNV(String maNV) {
+		return nhanVienRepository.findById(maNV)
+				.orElseThrow(() -> new ValidationException("Nhân viên không tồn tại"));
+	}
 }

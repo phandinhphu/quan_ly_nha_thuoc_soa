@@ -19,4 +19,7 @@ public class DonViTinh {
     
     @Column(name = "TenDonVi", length = 50)
     private String tenDonVi;
+
+    @Column(name = "MoTa", length = 255)
+    private String moTa;
 }

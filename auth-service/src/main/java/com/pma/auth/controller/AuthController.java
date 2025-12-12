@@ -100,4 +100,30 @@ public class AuthController {
         
         return ResponseEntity.ok(response);
     }
+    
+    /**
+     * API lấy thông tin người dùng từ token (/get/me)
+     */
+    @GetMapping("/get/me")
+    public ResponseEntity<Map<String, Object>> getMe(
+			@RequestHeader(value = "Authorization", required = false) String authHeader) {
+		log.info("Nhận yêu cầu lấy thông tin người dùng từ token");
+		
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+			Map<String, Object> response = new HashMap<>();
+			response.put("success", false);
+			response.put("message", "Token không hợp lệ");
+			return ResponseEntity.badRequest().body(response);
+		}
+		
+		String token = authHeader.substring(7);
+		UserDetailsResponse userDetails = authService.verifyToken(token);
+		
+		Map<String, Object> response = new HashMap<>();
+		response.put("success", true);
+		response.put("message", "Lấy thông tin người dùng thành công");
+		response.put("data", userDetails);
+		
+		return ResponseEntity.ok(response);
+	}
 }

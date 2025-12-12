@@ -16,4 +16,6 @@ public class DonViTinhRequest {
     
     @NotBlank(message = "Tên đơn vị không được để trống")
     private String tenDonVi;
+
+    private String moTa;
 }
