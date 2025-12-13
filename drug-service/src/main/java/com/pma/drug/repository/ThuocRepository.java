@@ -1,6 +1,9 @@
 package com.pma.drug.repository;
 
 import com.pma.drug.entity.Thuoc;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +16,7 @@ import java.util.List;
 public interface ThuocRepository extends JpaRepository<Thuoc, String> {
     boolean existsByMaThuoc(String maThuoc);
     
-    List<Thuoc> findByTenThuocContaining(String tenThuoc);
+    Page<Thuoc> findByTenThuocContainingIgnoreCase(String tenThuoc, Pageable pageable);
     
     List<Thuoc> findByLoaiThuoc_MaLoai(String maLoai);
     

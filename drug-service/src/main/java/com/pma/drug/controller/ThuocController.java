@@ -3,9 +3,16 @@ package com.pma.drug.controller;
 import com.pma.drug.dto.ThuocRequest;
 import com.pma.drug.dto.ThuocResponse;
 import com.pma.drug.dto.UpdateStockRequest;
+import com.pma.drug.dto.paginate.ApiResponse;
+import com.pma.drug.dto.paginate.PageResponse;
+import com.pma.drug.entity.*;
+import com.pma.drug.mapper.PageResponseMapper;
+import com.pma.drug.mapper.ThuocMapper;
 import com.pma.drug.service.ThuocService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -71,17 +78,18 @@ public class ThuocController {
     }
     
     @GetMapping("/search")
-    public ResponseEntity<Map<String, Object>> searchThuoc(@RequestParam String name) {
-        log.info("Nhận yêu cầu tìm kiếm thuốc theo tên: {}", name);
+    public ApiResponse<PageResponse<ThuocResponse>> searchThuoc(
+    		@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String tenThuoc
+    		) {
+        log.info("Nhận yêu cầu tìm kiếm thuốc theo tên: {}", tenThuoc);
         
-        List<ThuocResponse> list = thuocService.searchThuocByName(name);
+        Page<Thuoc> resultPage = thuocService.searchThuocByName(tenThuoc, page, size);
         
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Tìm kiếm thuốc thành công");
-        response.put("data", list);
+        Page<ThuocResponse> pageResponse = resultPage.map(ThuocMapper::toResponse);
         
-        return ResponseEntity.ok(response);
+        return ApiResponse.success(PageResponseMapper.from(pageResponse));
     }
     
     @GetMapping("/category/{maLoai}")

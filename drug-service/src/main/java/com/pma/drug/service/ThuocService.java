@@ -12,6 +12,10 @@ import com.pma.drug.repository.LoaiThuocRepository;
 import com.pma.drug.repository.ThuocRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -122,10 +126,14 @@ public class ThuocService {
     }
     
     @Transactional(readOnly = true)
-    public List<ThuocResponse> searchThuocByName(String tenThuoc) {
-        return thuocRepository.findByTenThuocContaining(tenThuoc).stream()
-                .map(this::convertToResponse)
-                .collect(Collectors.toList());
+    public Page<Thuoc> searchThuocByName(String tenThuoc, int page, int size) {
+    	Pageable pageable = PageRequest.of(page, size);
+    	
+    	if (tenThuoc == null || tenThuoc.trim().isEmpty()) {
+			return thuocRepository.findAll(pageable);
+		}
+    	
+        return thuocRepository.findByTenThuocContainingIgnoreCase(tenThuoc, pageable);
     }
     
     @Transactional(readOnly = true)
