@@ -1,5 +1,6 @@
 package com.pma.supplier.controller;
 
+import com.pma.supplier.dto.ApiResponse;
 import com.pma.supplier.dto.NhaCungCapRequest;
 import com.pma.supplier.entity.NhaCungCap;
 import com.pma.supplier.service.NhaCungCapService;
@@ -22,79 +23,54 @@ import java.util.Map;
 @Validated
 @Slf4j
 public class NhaCungCapController {
-    private final NhaCungCapService nhaCungCapService;
+	private final NhaCungCapService nhaCungCapService;
 
-    @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public ResponseEntity<Map<String, Object>> createNhaCungCap(@Valid @RequestBody NhaCungCapRequest request) {
-        log.info("Nhận yêu cầu tạo nhà cung cấp: {}", request.getMaNCC());
+	@PostMapping
+	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+	public ResponseEntity<ApiResponse<NhaCungCap>> createNhaCungCap(@Valid @RequestBody NhaCungCapRequest request) {
+		log.info("Nhận yêu cầu tạo nhà cung cấp: {}", request.getMaNCC());
 
-        NhaCungCap ncc = nhaCungCapService.createNhaCungCap(request);
+		NhaCungCap ncc = nhaCungCapService.createNhaCungCap(request);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Tạo nhà cung cấp thành công");
-        response.put("data", ncc);
+		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(ncc, "Tạo nhà cung cấp thành công"));
+	}
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<NhaCungCap>>> getAllNhaCungCap() {
+		log.info("Nhận yêu cầu lấy danh sách nhà cung cấp");
 
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllNhaCungCap() {
-        log.info("Nhận yêu cầu lấy danh sách nhà cung cấp");
+		List<NhaCungCap> list = nhaCungCapService.getAllNhaCungCap();
 
-        List<NhaCungCap> list = nhaCungCapService.getAllNhaCungCap();
+		return ResponseEntity.ok(ApiResponse.success(list, "Lấy danh sách nhà cung cấp thành công"));
+	}
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Lấy danh sách nhà cung cấp thành công");
-        response.put("data", list);
+	@GetMapping("/{maNCC}")
+	public ResponseEntity<ApiResponse<NhaCungCap>> getNhaCungCap(@PathVariable String maNCC) {
+		log.info("Nhận yêu cầu lấy thông tin nhà cung cấp: {}", maNCC);
 
-        return ResponseEntity.ok(response);
-    }
+		NhaCungCap ncc = nhaCungCapService.getNhaCungCap(maNCC);
 
-    @GetMapping("/{maNCC}")
-    public ResponseEntity<Map<String, Object>> getNhaCungCap(@PathVariable String maNCC) {
-        log.info("Nhận yêu cầu lấy thông tin nhà cung cấp: {}", maNCC);
+		return ResponseEntity.ok(ApiResponse.success(ncc, "Lấy thông tin nhà cung cấp thành công"));
+	}
 
-        NhaCungCap ncc = nhaCungCapService.getNhaCungCap(maNCC);
+	@PutMapping("/{maNCC}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+	public ResponseEntity<ApiResponse<NhaCungCap>> updateNhaCungCap(@PathVariable String maNCC,
+			@Valid @RequestBody NhaCungCapRequest request) {
+		log.info("Nhận yêu cầu cập nhật nhà cung cấp: {}", maNCC);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Lấy thông tin nhà cung cấp thành công");
-        response.put("data", ncc);
+		NhaCungCap ncc = nhaCungCapService.updateNhaCungCap(maNCC, request);
 
-        return ResponseEntity.ok(response);
-    }
+		return ResponseEntity.ok(ApiResponse.success(ncc, "Cập nhật nhà cung cấp thành công"));
+	}
 
-    @PutMapping("/{maNCC}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public ResponseEntity<Map<String, Object>> updateNhaCungCap(
-            @PathVariable String maNCC,
-            @Valid @RequestBody NhaCungCapRequest request) {
-        log.info("Nhận yêu cầu cập nhật nhà cung cấp: {}", maNCC);
+	@DeleteMapping("/{maNCC}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ApiResponse> deleteNhaCungCap(@PathVariable String maNCC) {
+		log.info("Nhận yêu cầu xóa nhà cung cấp: {}", maNCC);
 
-        NhaCungCap ncc = nhaCungCapService.updateNhaCungCap(maNCC, request);
+		nhaCungCapService.deleteNhaCungCap(maNCC);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Cập nhật nhà cung cấp thành công");
-        response.put("data", ncc);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{maNCC}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Object>> deleteNhaCungCap(@PathVariable String maNCC) {
-        log.info("Nhận yêu cầu xóa nhà cung cấp: {}", maNCC);
-
-        nhaCungCapService.deleteNhaCungCap(maNCC);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Xóa nhà cung cấp thành công");
-
-        return ResponseEntity.ok(response);
-    }
+		return ResponseEntity.ok(ApiResponse.successWithoutData("Xóa nhà cung cấp thành công"));
+	}
 }

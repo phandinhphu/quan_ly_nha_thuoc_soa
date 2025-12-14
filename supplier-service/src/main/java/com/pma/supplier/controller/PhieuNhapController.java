@@ -1,5 +1,6 @@
 package com.pma.supplier.controller;
 
+import com.pma.supplier.dto.ApiResponse;
 import com.pma.supplier.dto.PhieuNhapRequest;
 import com.pma.supplier.dto.PhieuNhapResponse;
 import com.pma.supplier.service.PhieuNhapService;
@@ -22,67 +23,48 @@ import java.util.Map;
 @Validated
 @Slf4j
 public class PhieuNhapController {
-    private final PhieuNhapService phieuNhapService;
+	private final PhieuNhapService phieuNhapService;
 
-    @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public ResponseEntity<Map<String, Object>> createPhieuNhap(
-            @Valid @RequestBody PhieuNhapRequest request,
-            @RequestHeader(value = "Authorization") String authHeader) {
-        log.info("Nhận yêu cầu tạo phiếu nhập: {}", request.getMaPhieuNhap());
+	@PostMapping
+	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+	public ResponseEntity<ApiResponse<PhieuNhapResponse>> createPhieuNhap(@Valid @RequestBody PhieuNhapRequest request,
+			@RequestHeader(value = "Authorization") String authHeader) {
+		log.info("Nhận yêu cầu tạo phiếu nhập: {}", request.getMaPhieuNhap());
 
-        // Extract token từ header
-        String token = authHeader.substring(7); // Bỏ "Bearer "
+		// Extract token từ header
+		String token = authHeader.substring(7); // Bỏ "Bearer "
 
-        PhieuNhapResponse phieuNhap = phieuNhapService.createPhieuNhap(request, token);
+		PhieuNhapResponse phieuNhap = phieuNhapService.createPhieuNhap(request, token);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Tạo phiếu nhập thành công và đã cập nhật tồn kho");
-        response.put("data", phieuNhap);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(ApiResponse.success(phieuNhap, "Tạo phiếu nhập thành công"));
+	}
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<PhieuNhapResponse>>> getAllPhieuNhap() {
+		log.info("Nhận yêu cầu lấy danh sách phiếu nhập");
 
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllPhieuNhap() {
-        log.info("Nhận yêu cầu lấy danh sách phiếu nhập");
+		List<PhieuNhapResponse> list = phieuNhapService.getAllPhieuNhap();
 
-        List<PhieuNhapResponse> list = phieuNhapService.getAllPhieuNhap();
+		return ResponseEntity.ok(ApiResponse.success(list, "Lấy danh sách phiếu nhập thành công"));
+	}
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Lấy danh sách phiếu nhập thành công");
-        response.put("data", list);
+	@GetMapping("/{maPhieuNhap}")
+	public ResponseEntity<ApiResponse<PhieuNhapResponse>> getPhieuNhap(@PathVariable String maPhieuNhap) {
+		log.info("Nhận yêu cầu lấy thông tin phiếu nhập: {}", maPhieuNhap);
 
-        return ResponseEntity.ok(response);
-    }
+		PhieuNhapResponse phieuNhap = phieuNhapService.getPhieuNhap(maPhieuNhap);
 
-    @GetMapping("/{maPhieuNhap}")
-    public ResponseEntity<Map<String, Object>> getPhieuNhap(@PathVariable String maPhieuNhap) {
-        log.info("Nhận yêu cầu lấy thông tin phiếu nhập: {}", maPhieuNhap);
+		return ResponseEntity.ok(ApiResponse.success(phieuNhap, "Lấy thông tin phiếu nhập thành công"));
+	}
 
-        PhieuNhapResponse phieuNhap = phieuNhapService.getPhieuNhap(maPhieuNhap);
+	@DeleteMapping("/{maPhieuNhap}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ApiResponse> deletePhieuNhap(@PathVariable String maPhieuNhap) {
+		log.info("Nhận yêu cầu xóa phiếu nhập: {}", maPhieuNhap);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Lấy thông tin phiếu nhập thành công");
-        response.put("data", phieuNhap);
+		phieuNhapService.deletePhieuNhap(maPhieuNhap);
 
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{maPhieuNhap}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Object>> deletePhieuNhap(@PathVariable String maPhieuNhap) {
-        log.info("Nhận yêu cầu xóa phiếu nhập: {}", maPhieuNhap);
-
-        phieuNhapService.deletePhieuNhap(maPhieuNhap);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Xóa phiếu nhập thành công");
-
-        return ResponseEntity.ok(response);
-    }
+		return ResponseEntity.ok(ApiResponse.successWithoutData("Xóa phiếu nhập thành công"));
+	}
 }

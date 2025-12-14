@@ -1,5 +1,6 @@
 package com.pma.inventory.controller;
 
+import com.pma.inventory.dto.ApiResponse;
 import com.pma.inventory.dto.LichSuTonRequest;
 import com.pma.inventory.dto.LichSuTonResponse;
 import com.pma.inventory.service.LichSuTonService;
@@ -24,107 +25,75 @@ import java.util.Map;
 @Validated
 @Slf4j
 public class LichSuTonController {
-    
-    private final LichSuTonService lichSuTonService;
-    
-    @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'USER')")
-    public ResponseEntity<Map<String, Object>> createLichSuTon(@Valid @RequestBody LichSuTonRequest request) {
-        log.info("Nhận yêu cầu tạo lịch sử tồn cho thuốc: {}", request.getMaThuoc());
-        
-        LichSuTonResponse lichSu = lichSuTonService.createLichSuTon(request);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Tạo lịch sử tồn thành công");
-        response.put("data", lichSu);
-        
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-    
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllLichSuTon() {
-        log.info("Nhận yêu cầu lấy danh sách lịch sử tồn");
-        
-        List<LichSuTonResponse> list = lichSuTonService.getAllLichSuTon();
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Lấy danh sách lịch sử tồn thành công");
-        response.put("data", list);
-        
-        return ResponseEntity.ok(response);
-    }
-    
-    @GetMapping("/{maLS}")
-    public ResponseEntity<Map<String, Object>> getLichSuTon(@PathVariable Integer maLS) {
-        log.info("Nhận yêu cầu lấy thông tin lịch sử tồn: {}", maLS);
-        
-        LichSuTonResponse lichSu = lichSuTonService.getLichSuTon(maLS);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Lấy thông tin lịch sử tồn thành công");
-        response.put("data", lichSu);
-        
-        return ResponseEntity.ok(response);
-    }
-    
-    @GetMapping("/drug/{maThuoc}")
-    public ResponseEntity<Map<String, Object>> getLichSuByMaThuoc(@PathVariable String maThuoc) {
-        log.info("Nhận yêu cầu lấy lịch sử tồn theo mã thuốc: {}", maThuoc);
-        
-        List<LichSuTonResponse> list = lichSuTonService.getLichSuByMaThuoc(maThuoc);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Lấy lịch sử tồn theo mã thuốc thành công");
-        response.put("data", list);
-        
-        return ResponseEntity.ok(response);
-    }
-    
-    @GetMapping("/date-range")
-    public ResponseEntity<Map<String, Object>> getLichSuByDateRange(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
-        log.info("Nhận yêu cầu lấy lịch sử tồn từ {} đến {}", start, end);
-        
-        List<LichSuTonResponse> list = lichSuTonService.getLichSuByDateRange(start, end);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Lấy lịch sử tồn theo khoảng thời gian thành công");
-        response.put("data", list);
-        
-        return ResponseEntity.ok(response);
-    }
-    
-    @GetMapping("/recent")
-    public ResponseEntity<Map<String, Object>> getRecentLichSuTon() {
-        log.info("Nhận yêu cầu lấy 10 lịch sử tồn gần nhất");
-        
-        List<LichSuTonResponse> list = lichSuTonService.getRecentLichSuTon();
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Lấy lịch sử tồn gần nhất thành công");
-        response.put("data", list);
-        
-        return ResponseEntity.ok(response);
-    }
-    
-    @DeleteMapping("/{maLS}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Object>> deleteLichSuTon(@PathVariable Integer maLS) {
-        log.info("Nhận yêu cầu xóa lịch sử tồn: {}", maLS);
-        
-        lichSuTonService.deleteLichSuTon(maLS);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Xóa lịch sử tồn thành công");
-        
-        return ResponseEntity.ok(response);
-    }
+
+	private final LichSuTonService lichSuTonService;
+
+	@PostMapping
+	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'USER')")
+	public ResponseEntity<ApiResponse<LichSuTonResponse>> createLichSuTon(
+			@Valid @RequestBody LichSuTonRequest request) {
+		log.info("Nhận yêu cầu tạo lịch sử tồn cho thuốc: {}", request.getMaThuoc());
+
+		LichSuTonResponse lichSu = lichSuTonService.createLichSuTon(request);
+
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(ApiResponse.success(lichSu, "Tạo lịch sử tồn thành công"));
+	}
+
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<LichSuTonResponse>>> getAllLichSuTon() {
+		log.info("Nhận yêu cầu lấy danh sách lịch sử tồn");
+
+		List<LichSuTonResponse> list = lichSuTonService.getAllLichSuTon();
+
+		return ResponseEntity.ok(ApiResponse.success(list, "Lấy danh sách lịch sử tồn thành công"));
+	}
+
+	@GetMapping("/{maLS}")
+	public ResponseEntity<ApiResponse<LichSuTonResponse>> getLichSuTon(@PathVariable Integer maLS) {
+		log.info("Nhận yêu cầu lấy thông tin lịch sử tồn: {}", maLS);
+
+		LichSuTonResponse lichSu = lichSuTonService.getLichSuTon(maLS);
+
+		return ResponseEntity.ok(ApiResponse.success(lichSu, "Lấy thông tin lịch sử tồn thành công"));
+	}
+
+	@GetMapping("/drug/{maThuoc}")
+	public ResponseEntity<ApiResponse<List<LichSuTonResponse>>> getLichSuByMaThuoc(@PathVariable String maThuoc) {
+		log.info("Nhận yêu cầu lấy lịch sử tồn theo mã thuốc: {}", maThuoc);
+
+		List<LichSuTonResponse> list = lichSuTonService.getLichSuByMaThuoc(maThuoc);
+
+		return ResponseEntity.ok(ApiResponse.success(list, "Lấy lịch sử tồn theo mã thuốc thành công"));
+	}
+
+	@GetMapping("/date-range")
+	public ResponseEntity<ApiResponse<List<LichSuTonResponse>>> getLichSuByDateRange(
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+		log.info("Nhận yêu cầu lấy lịch sử tồn từ {} đến {}", start, end);
+
+		List<LichSuTonResponse> list = lichSuTonService.getLichSuByDateRange(start, end);
+
+		return ResponseEntity.ok(ApiResponse.success(list, "Lấy lịch sử tồn theo khoảng thời gian thành công"));
+	}
+
+	@GetMapping("/recent")
+	public ResponseEntity<ApiResponse<List<LichSuTonResponse>>> getRecentLichSuTon() {
+		log.info("Nhận yêu cầu lấy 10 lịch sử tồn gần nhất");
+
+		List<LichSuTonResponse> list = lichSuTonService.getRecentLichSuTon();
+
+		return ResponseEntity.ok(ApiResponse.success(list, "Lấy 10 lịch sử tồn gần nhất thành công"));
+	}
+
+	@DeleteMapping("/{maLS}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ApiResponse> deleteLichSuTon(@PathVariable Integer maLS) {
+		log.info("Nhận yêu cầu xóa lịch sử tồn: {}", maLS);
+
+		lichSuTonService.deleteLichSuTon(maLS);
+
+		return ResponseEntity.ok(ApiResponse.successWithoutData("Xóa lịch sử tồn thành công"));
+	}
 }
