@@ -112,6 +112,29 @@ services:
         condition: service_started
     restart: on-failure
 
+  sales-service:
+    build:
+      context: .
+      dockerfile: sales-service/Dockerfile
+    container_name: pma-sales-service
+    ports:
+      - "8085:8085"
+    networks:
+      - pma-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=sales-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      drug-service:
+        condition: service_started
+      inventory-service:
+        condition: service_started
+    restart: on-failure
+
 networks:
   pma-network:
     driver: bridge
