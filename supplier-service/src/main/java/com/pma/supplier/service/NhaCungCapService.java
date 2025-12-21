@@ -7,6 +7,9 @@ import com.pma.supplier.exception.ValidationException;
 import com.pma.supplier.repository.NhaCungCapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +66,12 @@ public class NhaCungCapService {
 
         return nhaCungCapRepository.save(ncc);
     }
+    
+    @Transactional(readOnly = true)
+    public Page<NhaCungCap> getNhaCungCapByPage(int page, int size) {
+		log.info("Đang lấy danh sách nhà cung cấp trang: {}, kích thước: {}", page, size);
+		return nhaCungCapRepository.findAll(PageRequest.of(page, size));
+	}
 
     @Transactional
     public void deleteNhaCungCap(String maNCC) {

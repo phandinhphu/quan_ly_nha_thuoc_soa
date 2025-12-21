@@ -3,9 +3,13 @@ package com.pma.supplier.controller;
 import com.pma.supplier.dto.ApiResponse;
 import com.pma.supplier.dto.PhieuNhapRequest;
 import com.pma.supplier.dto.PhieuNhapResponse;
+import com.pma.supplier.dto.paginate.PageResponse;
+import com.pma.supplier.mapper.PageResponseMapper;
 import com.pma.supplier.service.PhieuNhapService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,9 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/suppliers/receipts")
@@ -47,6 +49,17 @@ public class PhieuNhapController {
 		List<PhieuNhapResponse> list = phieuNhapService.getAllPhieuNhap();
 
 		return ResponseEntity.ok(ApiResponse.success(list, "Lấy danh sách phiếu nhập thành công"));
+	}
+
+	@GetMapping("/page")
+	public ResponseEntity<ApiResponse<PageResponse<PhieuNhapResponse>>> getPhieuNhapPaginated(
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		log.info("Nhận yêu cầu lấy danh sách phiếu nhập phân trang: trang {}, kích thước {}", page, size);
+
+		Page<PhieuNhapResponse> response = phieuNhapService.getPhieuNhapByPage(page, size);
+
+		return ResponseEntity.ok(ApiResponse.success(PageResponseMapper.from(response),
+				"Lấy danh sách phiếu nhập phân trang thành công"));
 	}
 
 	@GetMapping("/{maPhieuNhap}")

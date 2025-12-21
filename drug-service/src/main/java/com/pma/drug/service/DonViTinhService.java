@@ -7,6 +7,10 @@ import com.pma.drug.exception.ValidationException;
 import com.pma.drug.repository.DonViTinhRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +60,18 @@ public class DonViTinhService {
     public List<DonViTinh> getAllDonViTinh() {
         return donViTinhRepository.findAll();
     }
+    
+    @Transactional(readOnly = true)
+    public Page<DonViTinh> searchDonViTinh(String keyword, int page, int size) {
+		log.info("Đang tìm kiếm đơn vị tính với từ khóa: {}", keyword);
+		Pageable pageable = PageRequest.of(page, size);
+		
+		if (keyword == null || keyword.isEmpty()) {
+			return donViTinhRepository.findAll(pageable);
+		}
+		
+		return donViTinhRepository.findByTenDonViContainingIgnoreCase(keyword, pageable);
+	}
     
     @Transactional
     public void deleteDonViTinh(String maDonVi) {

@@ -2,10 +2,14 @@ package com.pma.supplier.controller;
 
 import com.pma.supplier.dto.ApiResponse;
 import com.pma.supplier.dto.NhaCungCapRequest;
+import com.pma.supplier.dto.paginate.PageResponse;
 import com.pma.supplier.entity.NhaCungCap;
+import com.pma.supplier.mapper.PageResponseMapper;
 import com.pma.supplier.service.NhaCungCapService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,9 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/suppliers")
@@ -42,6 +44,17 @@ public class NhaCungCapController {
 		List<NhaCungCap> list = nhaCungCapService.getAllNhaCungCap();
 
 		return ResponseEntity.ok(ApiResponse.success(list, "Lấy danh sách nhà cung cấp thành công"));
+	}
+
+	@GetMapping("/page")
+	public ResponseEntity<ApiResponse<PageResponse<NhaCungCap>>> getNhaCungCapByPage(
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		log.info("Nhận yêu cầu lấy danh sách nhà cung cấp theo trang: page={}, size={}", page, size);
+
+		Page<NhaCungCap> response = nhaCungCapService.getNhaCungCapByPage(page, size);
+
+		return ResponseEntity.ok(ApiResponse.success(PageResponseMapper.from(response),
+				"Lấy danh sách nhà cung cấp theo trang thành công"));
 	}
 
 	@GetMapping("/{maNCC}")

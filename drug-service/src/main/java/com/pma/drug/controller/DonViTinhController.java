@@ -1,10 +1,15 @@
 package com.pma.drug.controller;
 
+import com.pma.drug.dto.ApiResponse;
 import com.pma.drug.dto.DonViTinhRequest;
+import com.pma.drug.dto.paginate.PageResponse;
 import com.pma.drug.entity.DonViTinh;
+import com.pma.drug.mapper.PageResponseMapper;
 import com.pma.drug.service.DonViTinhService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,6 +58,18 @@ public class DonViTinhController {
         
         return ResponseEntity.ok(response);
     }
+    
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<PageResponse<DonViTinh>>> searchDonViTinh(
+			@RequestParam(defaultValue = "") String keyword,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		log.info("Nhận yêu cầu tìm kiếm đơn vị tính với từ khóa: {}", keyword);
+		
+		Page<DonViTinh> pageResponse = donViTinhService.searchDonViTinh(keyword, page, size);
+		
+		return ResponseEntity.ok(ApiResponse.success(PageResponseMapper.from(pageResponse), "Lấy danh sách đơn vị tính thành công"));
+	}
     
     @GetMapping("/{maDonVi}")
     public ResponseEntity<Map<String, Object>> getDonViTinh(@PathVariable String maDonVi) {

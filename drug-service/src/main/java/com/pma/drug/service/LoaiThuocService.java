@@ -7,6 +7,10 @@ import com.pma.drug.exception.ValidationException;
 import com.pma.drug.repository.LoaiThuocRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +62,18 @@ public class LoaiThuocService {
     public List<LoaiThuoc> getAllLoaiThuoc() {
         return loaiThuocRepository.findAll();
     }
+    
+    @Transactional(readOnly = true)
+    public Page<LoaiThuoc> searchLoaiThuocByName(String tenLoai, int page, int size) {
+		log.info("Đang tìm kiếm loại thuốc với tên chứa: {}", tenLoai);
+		Pageable pageable = PageRequest.of(page, size);
+		
+		if (tenLoai == null || tenLoai.isEmpty()) {
+			return loaiThuocRepository.findAll(pageable);
+		}
+		
+		return loaiThuocRepository.findByTenLoaiContainingIgnoreCase(tenLoai, pageable);
+	}
     
     @Transactional
     public void deleteLoaiThuoc(String maLoai) {
