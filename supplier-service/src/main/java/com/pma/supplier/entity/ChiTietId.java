@@ -8,4 +8,4 @@ import java.io.Serializable;
 public class ChiTietId implements Serializable {
     private String maPhieuNhap;
     private String maThuoc;
-}
+} 

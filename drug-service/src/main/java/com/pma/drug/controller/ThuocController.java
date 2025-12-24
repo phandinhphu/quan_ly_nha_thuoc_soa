@@ -119,7 +119,7 @@ public class ThuocController {
 	}
 
 	@PatchMapping("/{maThuoc}/stock")
-	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'USER', 'STAFF')")
 	public ResponseEntity<ApiResponse<ThuocResponse>> updateStock(@PathVariable String maThuoc,
 			@Valid @RequestBody UpdateStockRequest request) {
 		log.info("Nhận yêu cầu cập nhật tồn kho cho thuốc: {}", maThuoc);
