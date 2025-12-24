@@ -57,5 +57,6 @@
         <module>supplier-service</module>
         <module>sales-service</module>
         <module>api-gateway</module>
+        <module>reporter-service</module>
     </modules>
 </project>
