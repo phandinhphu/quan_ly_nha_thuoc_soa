@@ -37,6 +37,10 @@ spring:
           uri: lb://sales-service
           predicates:
             - Path=/api/sales/**
+        - id: reporter-service
+          uri: lb://reporter-service
+          predicates:
+            - Path=/api/reports/**
       discovery:
         locator:
           enabled: true
