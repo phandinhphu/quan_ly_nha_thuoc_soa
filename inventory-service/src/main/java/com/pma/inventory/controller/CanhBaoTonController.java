@@ -115,7 +115,7 @@ public class CanhBaoTonController {
     }
     
     @PatchMapping("/{maThuoc}/current-stock")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Map<String, Object>> updateSoLuongHienTai(
             @PathVariable String maThuoc,
             @RequestParam Integer soLuongHienTai) {

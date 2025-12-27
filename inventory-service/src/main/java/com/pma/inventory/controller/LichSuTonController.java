@@ -29,7 +29,7 @@ public class LichSuTonController {
 	private final LichSuTonService lichSuTonService;
 
 	@PostMapping
-	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'USER')")
+	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
 	public ResponseEntity<ApiResponse<LichSuTonResponse>> createLichSuTon(
 			@Valid @RequestBody LichSuTonRequest request) {
 		log.info("Nhận yêu cầu tạo lịch sử tồn cho thuốc: {}", request.getMaThuoc());
