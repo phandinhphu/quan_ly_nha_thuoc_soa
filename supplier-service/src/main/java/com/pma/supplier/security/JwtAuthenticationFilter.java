@@ -1,6 +1,6 @@
 package com.pma.supplier.security;
 
-import com.pma.supplier.client.AuthServiceClient;
+import com.pma.supplier.client.impl.AuthServiceClient;
 import com.pma.supplier.dto.UserDetailsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

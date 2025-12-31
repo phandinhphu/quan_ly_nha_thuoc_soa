@@ -1,5 +1,6 @@
 package com.pma.drug.controller;
 
+import com.pma.drug.client.impl.InventoryServiceClient;
 import com.pma.drug.dto.ApiResponse;
 import com.pma.drug.dto.ThuocRequest;
 import com.pma.drug.dto.ThuocResponse;
@@ -20,9 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/drugs")
@@ -32,6 +31,7 @@ import java.util.Map;
 public class ThuocController {
 
 	private final ThuocService thuocService;
+    private final InventoryServiceClient inventoryServiceClient;
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
@@ -121,17 +121,26 @@ public class ThuocController {
 	@PatchMapping("/{maThuoc}/stock")
 	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'USER', 'STAFF')")
 	public ResponseEntity<ApiResponse<ThuocResponse>> updateStock(@PathVariable String maThuoc,
-			@Valid @RequestBody UpdateStockRequest request) {
+			@Valid @RequestBody UpdateStockRequest request,
+			@RequestHeader(value = "Authorization") String authHeader) {
 		log.info("Nhận yêu cầu cập nhật tồn kho cho thuốc: {}", maThuoc);
 
 		ThuocResponse thuoc = thuocService.updateStock(maThuoc, request.getSoLuong());
+		
+		String token = authHeader.substring(7); // Bỏ "Bearer "
+		
+		// Gửi cập nhật tồn kho đến inventory-service
+		Boolean inventoryUpdated = inventoryServiceClient.updateSoLuongHienTai(maThuoc, thuoc.getSoLuongTon(), token);
+		if (!inventoryUpdated) {
+			log.warn("Cảnh báo: Không thể cập nhật số lượng hiện tại trong inventory-service cho thuốc {}", maThuoc);
+		}
 
 		return ResponseEntity.ok(ApiResponse.success(thuoc, "Cập nhật tồn kho thành công"));
 	}
 
 	@DeleteMapping("/{maThuoc}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse> deleteThuoc(@PathVariable String maThuoc) {
+	public ResponseEntity<ApiResponse<Void>> deleteThuoc(@PathVariable String maThuoc) {
 		log.info("Nhận yêu cầu xóa thuốc: {}", maThuoc);
 
 		thuocService.deleteThuoc(maThuoc);

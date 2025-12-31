@@ -1,5 +1,7 @@
 package com.pma.inventory.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,4 +14,5 @@ public class CanhBaoTonResponse {
     private Integer soLuongToiThieu;
     private Integer soLuongHienTai;
     private String trangThai;
+    private LocalDateTime createdAt;
 }

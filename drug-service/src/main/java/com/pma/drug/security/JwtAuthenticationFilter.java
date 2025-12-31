@@ -1,6 +1,6 @@
 package com.pma.drug.security;
 
-import com.pma.drug.client.AuthServiceClient;
+import com.pma.drug.client.impl.AuthServiceClient;
 import com.pma.drug.dto.UserDetailsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

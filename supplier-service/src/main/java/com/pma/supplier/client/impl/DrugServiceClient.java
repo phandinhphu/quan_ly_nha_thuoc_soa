@@ -1,10 +1,12 @@
-package com.pma.supplier.client;
+package com.pma.supplier.client.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import com.pma.supplier.client.IDrugServiceClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,14 +15,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class DrugServiceClient {
+    private final IDrugServiceClient drugServiceClient;
     private final RestTemplate restTemplate;
     private static final String DRUG_SERVICE_NAME = "http://drug-service";
 
-    /**
-     * Gọi drug-service để cập nhật tồn kho thuốc
-     */
     public boolean updateStock(String maThuoc, Integer soLuong, String token) {
-        try {
+    	try {
             String url = DRUG_SERVICE_NAME + "/api/drugs/" + maThuoc + "/stock";
 
             HttpHeaders headers = new HttpHeaders();
@@ -52,21 +52,12 @@ public class DrugServiceClient {
         }
     }
 
-    /**
-     * Kiểm tra mã thuốc có tồn tại trong drug-service không
-     */
     public boolean checkDrugExists(String maThuoc, String token) {
         try {
-            String url = DRUG_SERVICE_NAME + "/api/drugs/" + maThuoc;
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + token);
-
-            HttpEntity<Void> request = new HttpEntity<>(headers);
 
             log.debug("Kiểm tra thuốc {} có tồn tại không", maThuoc);
 
-            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
+            ResponseEntity<Map<String, Object>> response = drugServiceClient.getDrugByMaThuoc(maThuoc, "Bearer " + token);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 log.info("Thuốc {} tồn tại trong hệ thống", maThuoc);

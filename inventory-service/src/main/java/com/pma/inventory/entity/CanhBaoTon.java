@@ -1,5 +1,7 @@
 package com.pma.inventory.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,4 +26,7 @@ public class CanhBaoTon {
     
     @Column(name = "TrangThai", length = 50)
     private String trangThai;
+    
+    @Column(name = "CreatedAt")
+    private LocalDateTime createdAt;
 }

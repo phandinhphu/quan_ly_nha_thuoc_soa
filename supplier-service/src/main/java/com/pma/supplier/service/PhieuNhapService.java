@@ -1,7 +1,7 @@
 package com.pma.supplier.service;
 
-import com.pma.supplier.client.DrugServiceClient;
-import com.pma.supplier.client.InventoryServiceClient;
+import com.pma.supplier.client.impl.DrugServiceClient;
+import com.pma.supplier.client.impl.InventoryServiceClient;
 import com.pma.supplier.dto.ChiTietRequest;
 import com.pma.supplier.dto.PhieuNhapRequest;
 import com.pma.supplier.dto.PhieuNhapResponse;

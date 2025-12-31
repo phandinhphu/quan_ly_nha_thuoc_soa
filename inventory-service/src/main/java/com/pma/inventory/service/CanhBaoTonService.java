@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,7 @@ public class CanhBaoTonService {
         canhBao.setSoLuongToiThieu(request.getSoLuongToiThieu());
         canhBao.setSoLuongHienTai(request.getSoLuongHienTai());
         canhBao.setTrangThai(calculateStatus(request.getSoLuongHienTai(), request.getSoLuongToiThieu()));
+        canhBao.setCreatedAt(LocalDateTime.now());
         
         CanhBaoTon saved = canhBaoTonRepository.save(canhBao);
         log.info("Đã tạo cảnh báo tồn cho thuốc: {}", saved.getMaThuoc());
@@ -71,6 +73,7 @@ public class CanhBaoTonService {
         canhBao.setSoLuongToiThieu(request.getSoLuongToiThieu());
         canhBao.setSoLuongHienTai(request.getSoLuongHienTai());
         canhBao.setTrangThai(calculateStatus(request.getSoLuongHienTai(), request.getSoLuongToiThieu()));
+        canhBao.setCreatedAt(LocalDateTime.now());
         
         CanhBaoTon updated = canhBaoTonRepository.save(canhBao);
         log.info("Đã cập nhật cảnh báo tồn cho thuốc: {}", updated.getMaThuoc());
@@ -85,6 +88,7 @@ public class CanhBaoTonService {
         
         canhBao.setSoLuongHienTai(soLuongHienTai);
         canhBao.setTrangThai(calculateStatus(soLuongHienTai, canhBao.getSoLuongToiThieu()));
+        canhBao.setCreatedAt(LocalDateTime.now());
         
         CanhBaoTon updated = canhBaoTonRepository.save(canhBao);
         log.info("Đã cập nhật số lượng hiện tại cho thuốc: {}", updated.getMaThuoc());
@@ -122,6 +126,7 @@ public class CanhBaoTonService {
         response.setSoLuongToiThieu(canhBao.getSoLuongToiThieu());
         response.setSoLuongHienTai(canhBao.getSoLuongHienTai());
         response.setTrangThai(canhBao.getTrangThai());
+        response.setCreatedAt(canhBao.getCreatedAt());
         return response;
     }
 }
