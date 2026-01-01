@@ -5,7 +5,8 @@ import com.pma.supplier.dto.NhaCungCapRequest;
 import com.pma.supplier.dto.paginate.PageResponse;
 import com.pma.supplier.entity.NhaCungCap;
 import com.pma.supplier.mapper.PageResponseMapper;
-import com.pma.supplier.service.NhaCungCapService;
+import com.pma.supplier.service.INhaCungCapService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +26,7 @@ import java.util.List;
 @Validated
 @Slf4j
 public class NhaCungCapController {
-	private final NhaCungCapService nhaCungCapService;
+	private final INhaCungCapService nhaCungCapService;
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
@@ -79,7 +80,7 @@ public class NhaCungCapController {
 
 	@DeleteMapping("/{maNCC}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse> deleteNhaCungCap(@PathVariable String maNCC) {
+	public ResponseEntity<ApiResponse<Void>> deleteNhaCungCap(@PathVariable String maNCC) {
 		log.info("Nhận yêu cầu xóa nhà cung cấp: {}", maNCC);
 
 		nhaCungCapService.deleteNhaCungCap(maNCC);

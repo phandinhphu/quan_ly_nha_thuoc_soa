@@ -1,4 +1,4 @@
-package com.pma.inventory.service;
+package com.pma.inventory.service.impl;
 
 import com.pma.inventory.dto.CanhBaoTonRequest;
 import com.pma.inventory.dto.CanhBaoTonResponse;
@@ -6,6 +6,8 @@ import com.pma.inventory.entity.CanhBaoTon;
 import com.pma.inventory.exception.ResourceNotFoundException;
 import com.pma.inventory.exception.ValidationException;
 import com.pma.inventory.repository.CanhBaoTonRepository;
+import com.pma.inventory.service.ICanhBaoTonService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CanhBaoTonService {
+public class CanhBaoTonService implements ICanhBaoTonService {
     
     private final CanhBaoTonRepository canhBaoTonRepository;
     
+    @Override
     @Transactional
     public CanhBaoTonResponse createCanhBaoTon(CanhBaoTonRequest request) {
         if (canhBaoTonRepository.existsById(request.getMaThuoc())) {
@@ -40,31 +43,36 @@ public class CanhBaoTonService {
         
         return toResponse(saved);
     }
-    
+
+    @Override
     public List<CanhBaoTonResponse> getAllCanhBaoTon() {
         return canhBaoTonRepository.findAll().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     public CanhBaoTonResponse getCanhBaoTon(String maThuoc) {
         CanhBaoTon canhBao = canhBaoTonRepository.findById(maThuoc)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy cảnh báo cho thuốc: " + maThuoc));
         return toResponse(canhBao);
     }
-    
+
+    @Override
     public List<CanhBaoTonResponse> getLowStockAlerts() {
         return canhBaoTonRepository.findLowStockAlerts().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     public List<CanhBaoTonResponse> getCanhBaoByTrangThai(String trangThai) {
         return canhBaoTonRepository.findByTrangThai(trangThai).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     @Transactional
     public CanhBaoTonResponse updateCanhBaoTon(String maThuoc, CanhBaoTonRequest request) {
         CanhBaoTon canhBao = canhBaoTonRepository.findById(maThuoc)
@@ -80,7 +88,8 @@ public class CanhBaoTonService {
         
         return toResponse(updated);
     }
-    
+
+    @Override
     @Transactional
     public CanhBaoTonResponse updateSoLuongHienTai(String maThuoc, Integer soLuongHienTai) {
         CanhBaoTon canhBao = canhBaoTonRepository.findById(maThuoc)
@@ -95,7 +104,8 @@ public class CanhBaoTonService {
         
         return toResponse(updated);
     }
-    
+
+    @Override
     @Transactional
     public void deleteCanhBaoTon(String maThuoc) {
         if (!canhBaoTonRepository.existsById(maThuoc)) {

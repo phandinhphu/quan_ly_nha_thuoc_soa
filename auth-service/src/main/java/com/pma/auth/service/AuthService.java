@@ -19,13 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthService {
+public class AuthService implements IAuthService {
     
     private final TaiKhoanRepository taiKhoanRepository;
     private final NhanVienRepository nhanVienRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     
+    @Override
     @Transactional
     public String register(RegisterRequest request) {
         log.info("Đang xử lý đăng ký cho tài khoản: {}", request.getTenDangNhap());
@@ -66,7 +67,8 @@ public class AuthService {
                                      nhanVien.getMaNV(), 
                                      nhanVien.getVaiTro());
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public String login(LoginRequest request) {
         log.info("Đang xử lý đăng nhập cho tài khoản: {}", request.getTenDangNhap());
@@ -92,7 +94,8 @@ public class AuthService {
                                      taiKhoan.getNhanVien().getMaNV(), 
                                      taiKhoan.getNhanVien().getVaiTro());
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public UserDetailsResponse verifyToken(String token) {
         log.info("Đang xác thực token");
@@ -127,7 +130,8 @@ public class AuthService {
                 taiKhoan.getTrangThai()
         );
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public NhanVien getNhanVienByMaNV(String maNV) {
 		return nhanVienRepository.findById(maNV)

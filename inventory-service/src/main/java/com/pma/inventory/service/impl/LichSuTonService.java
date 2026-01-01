@@ -1,10 +1,12 @@
-package com.pma.inventory.service;
+package com.pma.inventory.service.impl;
 
 import com.pma.inventory.dto.LichSuTonRequest;
 import com.pma.inventory.dto.LichSuTonResponse;
 import com.pma.inventory.entity.LichSuTon;
 import com.pma.inventory.exception.ResourceNotFoundException;
 import com.pma.inventory.repository.LichSuTonRepository;
+import com.pma.inventory.service.ILichSuTonService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,10 +19,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class LichSuTonService {
+public class LichSuTonService implements ILichSuTonService {
     
     private final LichSuTonRepository lichSuTonRepository;
     
+    @Override
     @Transactional
     public LichSuTonResponse createLichSuTon(LichSuTonRequest request) {
         LichSuTon lichSu = new LichSuTon();
@@ -34,37 +37,43 @@ public class LichSuTonService {
         
         return toResponse(saved);
     }
-    
+
+    @Override
     public List<LichSuTonResponse> getAllLichSuTon() {
         return lichSuTonRepository.findAll().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     public LichSuTonResponse getLichSuTon(Integer maLS) {
         LichSuTon lichSu = lichSuTonRepository.findById(maLS)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy lịch sử: " + maLS));
         return toResponse(lichSu);
     }
-    
+
+    @Override
     public List<LichSuTonResponse> getLichSuByMaThuoc(String maThuoc) {
         return lichSuTonRepository.findByMaThuocOrderByNgayCapNhatDesc(maThuoc).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     public List<LichSuTonResponse> getLichSuByDateRange(LocalDateTime start, LocalDateTime end) {
         return lichSuTonRepository.findByNgayCapNhatBetweenOrderByNgayCapNhatDesc(start, end).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     public List<LichSuTonResponse> getRecentLichSuTon() {
         return lichSuTonRepository.findTop10ByOrderByNgayCapNhatDesc().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     @Transactional
     public void deleteLichSuTon(Integer maLS) {
         if (!lichSuTonRepository.existsById(maLS)) {

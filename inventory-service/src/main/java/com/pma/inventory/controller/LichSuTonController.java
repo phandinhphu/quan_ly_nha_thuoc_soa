@@ -3,7 +3,8 @@ package com.pma.inventory.controller;
 import com.pma.inventory.dto.ApiResponse;
 import com.pma.inventory.dto.LichSuTonRequest;
 import com.pma.inventory.dto.LichSuTonResponse;
-import com.pma.inventory.service.LichSuTonService;
+import com.pma.inventory.service.ILichSuTonService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ import java.util.List;
 @Slf4j
 public class LichSuTonController {
 
-	private final LichSuTonService lichSuTonService;
+	private final ILichSuTonService lichSuTonService;
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
@@ -87,7 +88,7 @@ public class LichSuTonController {
 
 	@DeleteMapping("/{maLS}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse> deleteLichSuTon(@PathVariable Integer maLS) {
+	public ResponseEntity<ApiResponse<Void>> deleteLichSuTon(@PathVariable Integer maLS) {
 		log.info("Nhận yêu cầu xóa lịch sử tồn: {}", maLS);
 
 		lichSuTonService.deleteLichSuTon(maLS);

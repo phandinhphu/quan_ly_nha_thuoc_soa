@@ -1,10 +1,12 @@
-package com.pma.drug.service;
+package com.pma.drug.service.impl;
 
 import com.pma.drug.dto.LoaiThuocRequest;
 import com.pma.drug.entity.LoaiThuoc;
 import com.pma.drug.exception.ResourceNotFoundException;
 import com.pma.drug.exception.ValidationException;
 import com.pma.drug.repository.LoaiThuocRepository;
+import com.pma.drug.service.ILoaiThuocService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,10 +21,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class LoaiThuocService {
+public class LoaiThuocService implements ILoaiThuocService {
     
     private final LoaiThuocRepository loaiThuocRepository;
     
+    @Override
     @Transactional
     public LoaiThuoc createLoaiThuoc(LoaiThuocRequest request) {
         log.info("Đang tạo loại thuốc mới: {}", request.getMaLoai());
@@ -38,7 +41,8 @@ public class LoaiThuocService {
         
         return loaiThuocRepository.save(loaiThuoc);
     }
-    
+
+    @Override
     @Transactional
     public LoaiThuoc updateLoaiThuoc(String maLoai, LoaiThuocRequest request) {
         log.info("Đang cập nhật loại thuốc: {}", maLoai);
@@ -51,18 +55,21 @@ public class LoaiThuocService {
         
         return loaiThuocRepository.save(loaiThuoc);
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public LoaiThuoc getLoaiThuoc(String maLoai) {
         return loaiThuocRepository.findById(maLoai)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy loại thuốc với mã: " + maLoai));
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public List<LoaiThuoc> getAllLoaiThuoc() {
         return loaiThuocRepository.findAll();
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public Page<LoaiThuoc> searchLoaiThuocByName(String tenLoai, int page, int size) {
 		log.info("Đang tìm kiếm loại thuốc với tên chứa: {}", tenLoai);
@@ -74,7 +81,8 @@ public class LoaiThuocService {
 		
 		return loaiThuocRepository.findByTenLoaiContainingIgnoreCase(tenLoai, pageable);
 	}
-    
+
+    @Override
     @Transactional
     public void deleteLoaiThuoc(String maLoai) {
         log.info("Đang xóa loại thuốc: {}", maLoai);

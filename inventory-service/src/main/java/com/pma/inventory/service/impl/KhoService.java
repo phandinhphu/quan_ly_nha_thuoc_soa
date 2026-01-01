@@ -1,4 +1,4 @@
-package com.pma.inventory.service;
+package com.pma.inventory.service.impl;
 
 import com.pma.inventory.dto.KhoRequest;
 import com.pma.inventory.dto.KhoResponse;
@@ -6,6 +6,8 @@ import com.pma.inventory.entity.Kho;
 import com.pma.inventory.exception.ResourceNotFoundException;
 import com.pma.inventory.exception.ValidationException;
 import com.pma.inventory.repository.KhoRepository;
+import com.pma.inventory.service.IKhoService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,10 +19,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class KhoService {
+public class KhoService implements IKhoService {
     
     private final KhoRepository khoRepository;
     
+    @Override
     @Transactional
     public KhoResponse createKho(KhoRequest request) {
         if (khoRepository.existsById(request.getMaKho())) {
@@ -38,19 +41,22 @@ public class KhoService {
         
         return toResponse(saved);
     }
-    
+
+    @Override
     public List<KhoResponse> getAllKho() {
         return khoRepository.findAll().stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     public KhoResponse getKho(String maKho) {
         Kho kho = khoRepository.findById(maKho)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy kho: " + maKho));
         return toResponse(kho);
     }
-    
+
+    @Override
     @Transactional
     public KhoResponse updateKho(String maKho, KhoRequest request) {
         Kho kho = khoRepository.findById(maKho)
@@ -65,7 +71,8 @@ public class KhoService {
         
         return toResponse(updated);
     }
-    
+
+    @Override
     @Transactional
     public void deleteKho(String maKho) {
         if (!khoRepository.existsById(maKho)) {

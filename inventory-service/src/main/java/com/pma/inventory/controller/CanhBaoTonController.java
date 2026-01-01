@@ -3,7 +3,8 @@ package com.pma.inventory.controller;
 import com.pma.inventory.dto.ApiResponse;
 import com.pma.inventory.dto.CanhBaoTonRequest;
 import com.pma.inventory.dto.CanhBaoTonResponse;
-import com.pma.inventory.service.CanhBaoTonService;
+import com.pma.inventory.service.ICanhBaoTonService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ import java.util.List;
 @Slf4j
 public class CanhBaoTonController {
     
-    private final CanhBaoTonService canhBaoTonService;
+    private final ICanhBaoTonService canhBaoTonService;
     
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")

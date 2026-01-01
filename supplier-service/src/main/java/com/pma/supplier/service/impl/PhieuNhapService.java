@@ -1,4 +1,4 @@
-package com.pma.supplier.service;
+package com.pma.supplier.service.impl;
 
 import com.pma.supplier.client.impl.DrugServiceClient;
 import com.pma.supplier.client.impl.InventoryServiceClient;
@@ -12,6 +12,8 @@ import com.pma.supplier.exception.ValidationException;
 import com.pma.supplier.mapper.PhieuNhapMapper;
 import com.pma.supplier.repository.NhaCungCapRepository;
 import com.pma.supplier.repository.PhieuNhapRepository;
+import com.pma.supplier.service.IPhieuNhapService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,12 +29,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PhieuNhapService {
+public class PhieuNhapService implements IPhieuNhapService {
 	private final PhieuNhapRepository phieuNhapRepository;
 	private final NhaCungCapRepository nhaCungCapRepository;
 	private final DrugServiceClient drugServiceClient;
 	private final InventoryServiceClient inventoryServiceClient;
 
+	@Override
 	@Transactional
 	public PhieuNhapResponse createPhieuNhap(PhieuNhapRequest request, String token) {
 		log.info("Đang tạo phiếu nhập mới: {}", request.getMaPhieuNhap());
@@ -109,6 +112,7 @@ public class PhieuNhapService {
 		return response;
 	}
 
+	@Override
 	@Transactional(readOnly = true)
 	public Page<PhieuNhapResponse> getPhieuNhapByPage(int page, int size) {
 		log.info("Đang lấy danh sách phiếu nhập trang: {}, kích thước: {}", page, size);
@@ -127,6 +131,7 @@ public class PhieuNhapService {
 		});
 	}
 
+	@Override
 	@Transactional(readOnly = true)
 	public PhieuNhapResponse getPhieuNhap(String maPhieuNhap) {
 		PhieuNhap phieuNhap = phieuNhapRepository.findById(maPhieuNhap)
@@ -143,6 +148,7 @@ public class PhieuNhapService {
 		return response;
 	}
 
+	@Override
 	@Transactional(readOnly = true)
 	public List<PhieuNhapResponse> getAllPhieuNhap() {
 		return phieuNhapRepository.findAll().stream().map(phieuNhap -> {
@@ -157,6 +163,7 @@ public class PhieuNhapService {
 		}).collect(Collectors.toList());
 	}
 
+	@Override
 	@Transactional
 	public void deletePhieuNhap(String maPhieuNhap) {
 		log.info("Đang xóa phiếu nhập: {}", maPhieuNhap);

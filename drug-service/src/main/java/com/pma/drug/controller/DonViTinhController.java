@@ -5,7 +5,8 @@ import com.pma.drug.dto.DonViTinhRequest;
 import com.pma.drug.dto.paginate.PageResponse;
 import com.pma.drug.entity.DonViTinh;
 import com.pma.drug.mapper.PageResponseMapper;
-import com.pma.drug.service.DonViTinhService;
+import com.pma.drug.service.IDonViTinhService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +29,7 @@ import java.util.Map;
 @Slf4j
 public class DonViTinhController {
     
-    private final DonViTinhService donViTinhService;
+    private final IDonViTinhService donViTinhService;
     
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")

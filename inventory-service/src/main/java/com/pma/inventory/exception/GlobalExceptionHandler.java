@@ -12,33 +12,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pma.inventory.dto.ApiResponse;
 
-/**
- * Global Exception Handler for Drug Service
- */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ResourceNotFoundException.class)
 	@ResponseBody
-	public ResponseEntity<ApiResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+	public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException(ResourceNotFoundException ex) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.failure(ex.getMessage()));
 	}
 
 	@ExceptionHandler(ValidationException.class)
 	@ResponseBody
-	public ResponseEntity<ApiResponse> handleValidationException(ValidationException ex) {
+	public ResponseEntity<ApiResponse<Void>> handleValidationException(ValidationException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(ex.getMessage()));
 	}
 
 	@ExceptionHandler(UnauthorizedException.class)
 	@ResponseBody
-	public ResponseEntity<ApiResponse> handleUnauthorizedException(UnauthorizedException ex) {
+	public ResponseEntity<ApiResponse<Void>> handleUnauthorizedException(UnauthorizedException ex) {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.failure(ex.getMessage()));
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseBody
-	public ResponseEntity<ApiResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+	public ResponseEntity<ApiResponse<Void>> handleIllegalArgumentException(IllegalArgumentException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(ex.getMessage()));
 	}
 
@@ -61,7 +58,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	@ResponseBody
-	public ResponseEntity<ApiResponse> handleGenericException(Exception ex) {
+	public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 				.body(ApiResponse.failure("Đã xảy ra lỗi nội bộ máy chủ! " + ex.getMessage()));
 	}

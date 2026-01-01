@@ -5,7 +5,8 @@ import com.pma.supplier.dto.PhieuNhapRequest;
 import com.pma.supplier.dto.PhieuNhapResponse;
 import com.pma.supplier.dto.paginate.PageResponse;
 import com.pma.supplier.mapper.PageResponseMapper;
-import com.pma.supplier.service.PhieuNhapService;
+import com.pma.supplier.service.IPhieuNhapService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +26,7 @@ import java.util.List;
 @Validated
 @Slf4j
 public class PhieuNhapController {
-	private final PhieuNhapService phieuNhapService;
+	private final IPhieuNhapService phieuNhapService;
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
@@ -73,7 +74,7 @@ public class PhieuNhapController {
 
 	@DeleteMapping("/{maPhieuNhap}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<ApiResponse> deletePhieuNhap(@PathVariable String maPhieuNhap) {
+	public ResponseEntity<ApiResponse<Void>> deletePhieuNhap(@PathVariable String maPhieuNhap) {
 		log.info("Nhận yêu cầu xóa phiếu nhập: {}", maPhieuNhap);
 
 		phieuNhapService.deletePhieuNhap(maPhieuNhap);

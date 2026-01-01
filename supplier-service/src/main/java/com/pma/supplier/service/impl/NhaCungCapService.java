@@ -1,10 +1,12 @@
-package com.pma.supplier.service;
+package com.pma.supplier.service.impl;
 
 import com.pma.supplier.dto.NhaCungCapRequest;
 import com.pma.supplier.entity.NhaCungCap;
 import com.pma.supplier.exception.ResourceNotFoundException;
 import com.pma.supplier.exception.ValidationException;
 import com.pma.supplier.repository.NhaCungCapRepository;
+import com.pma.supplier.service.INhaCungCapService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,9 +20,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class NhaCungCapService {
+public class NhaCungCapService implements INhaCungCapService {
     private final NhaCungCapRepository nhaCungCapRepository;
 
+    @Override
     @Transactional
     public NhaCungCap createNhaCungCap(NhaCungCapRequest request) {
         log.info("Đang tạo nhà cung cấp mới: {}", request.getMaNCC());
@@ -40,17 +43,20 @@ public class NhaCungCapService {
         return nhaCungCapRepository.save(ncc);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public NhaCungCap getNhaCungCap(String maNCC) {
         return nhaCungCapRepository.findById(maNCC)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhà cung cấp với mã: " + maNCC));
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<NhaCungCap> getAllNhaCungCap() {
         return nhaCungCapRepository.findAll();
     }
 
+    @Override
     @Transactional
     public NhaCungCap updateNhaCungCap(String maNCC, NhaCungCapRequest request) {
         log.info("Đang cập nhật nhà cung cấp: {}", maNCC);
@@ -66,13 +72,15 @@ public class NhaCungCapService {
 
         return nhaCungCapRepository.save(ncc);
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public Page<NhaCungCap> getNhaCungCapByPage(int page, int size) {
 		log.info("Đang lấy danh sách nhà cung cấp trang: {}, kích thước: {}", page, size);
 		return nhaCungCapRepository.findAll(PageRequest.of(page, size));
 	}
 
+    @Override
     @Transactional
     public void deleteNhaCungCap(String maNCC) {
         log.info("Đang xóa nhà cung cấp: {}", maNCC);

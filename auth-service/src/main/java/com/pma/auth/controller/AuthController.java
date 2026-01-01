@@ -5,7 +5,8 @@ import com.pma.auth.dto.LoginRequest;
 import com.pma.auth.dto.RegisterRequest;
 import com.pma.auth.dto.UserDetailsResponse;
 import com.pma.auth.dto.VerifyTokenRequest;
-import com.pma.auth.service.AuthService;
+import com.pma.auth.service.IAuthService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ import java.util.Map;
 @Slf4j
 public class AuthController {
 
-	private final AuthService authService;
+	private final IAuthService authService;
 
 	/**
 	 * API đăng ký tài khoản mới

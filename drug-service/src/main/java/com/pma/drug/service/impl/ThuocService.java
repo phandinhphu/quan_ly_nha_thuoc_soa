@@ -1,4 +1,4 @@
-package com.pma.drug.service;
+package com.pma.drug.service.impl;
 
 import com.pma.drug.dto.ThuocRequest;
 import com.pma.drug.dto.ThuocResponse;
@@ -10,6 +10,8 @@ import com.pma.drug.exception.ValidationException;
 import com.pma.drug.repository.DonViTinhRepository;
 import com.pma.drug.repository.LoaiThuocRepository;
 import com.pma.drug.repository.ThuocRepository;
+import com.pma.drug.service.IThuocService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,12 +28,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ThuocService {
+public class ThuocService implements IThuocService {
     
     private final ThuocRepository thuocRepository;
     private final LoaiThuocRepository loaiThuocRepository;
     private final DonViTinhRepository donViTinhRepository;
     
+    @Override
     @Transactional
     public ThuocResponse createThuoc(ThuocRequest request) {
         log.info("Đang tạo thuốc mới: {}", request.getMaThuoc());
@@ -63,7 +66,8 @@ public class ThuocService {
         
         return convertToResponse(thuoc);
     }
-    
+
+    @Override
     @Transactional
     public ThuocResponse updateThuoc(String maThuoc, ThuocRequest request) {
         log.info("Đang cập nhật thuốc: {}", maThuoc);
@@ -91,7 +95,8 @@ public class ThuocService {
         
         return convertToResponse(thuoc);
     }
-    
+
+    @Override
     @Transactional
     public ThuocResponse updateStock(String maThuoc, Integer quantity) {
         log.info("Đang cập nhật tồn kho cho thuốc: {}, số lượng: {}", maThuoc, quantity);
@@ -109,7 +114,8 @@ public class ThuocService {
         
         return convertToResponse(thuoc);
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public ThuocResponse getThuoc(String maThuoc) {
         Thuoc thuoc = thuocRepository.findById(maThuoc)
@@ -117,14 +123,16 @@ public class ThuocService {
         
         return convertToResponse(thuoc);
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public List<ThuocResponse> getAllThuoc() {
         return thuocRepository.findAll().stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public Page<Thuoc> searchThuocByName(String tenThuoc, int page, int size) {
     	Pageable pageable = PageRequest.of(page, size);
@@ -135,21 +143,24 @@ public class ThuocService {
     	
         return thuocRepository.findByTenThuocContainingIgnoreCase(tenThuoc, pageable);
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public List<ThuocResponse> getThuocByLoai(String maLoai) {
         return thuocRepository.findByLoaiThuoc_MaLoai(maLoai).stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public List<ThuocResponse> getLowStockDrugs(Integer threshold) {
         return thuocRepository.findLowStockDrugs(threshold).stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public List<ThuocResponse> getExpiringDrugs(Integer daysAhead) {
         LocalDate checkDate = LocalDate.now().plusDays(daysAhead);
@@ -157,7 +168,8 @@ public class ThuocService {
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
-    
+
+    @Override
     @Transactional
     public void deleteThuoc(String maThuoc) {
         log.info("Đang xóa thuốc: {}", maThuoc);

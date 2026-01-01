@@ -9,7 +9,8 @@ import com.pma.drug.dto.paginate.PageResponse;
 import com.pma.drug.entity.*;
 import com.pma.drug.mapper.PageResponseMapper;
 import com.pma.drug.mapper.ThuocMapper;
-import com.pma.drug.service.ThuocService;
+import com.pma.drug.service.IThuocService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +31,7 @@ import java.util.List;
 @Slf4j
 public class ThuocController {
 
-	private final ThuocService thuocService;
+	private final IThuocService thuocService;
     private final InventoryServiceClient inventoryServiceClient;
 
 	@PostMapping

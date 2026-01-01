@@ -5,7 +5,8 @@ import com.pma.drug.dto.LoaiThuocRequest;
 import com.pma.drug.dto.paginate.PageResponse;
 import com.pma.drug.entity.LoaiThuoc;
 import com.pma.drug.mapper.PageResponseMapper;
-import com.pma.drug.service.LoaiThuocService;
+import com.pma.drug.service.ILoaiThuocService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +29,7 @@ import java.util.Map;
 @Slf4j
 public class LoaiThuocController {
 
-	private final LoaiThuocService loaiThuocService;
+	private final ILoaiThuocService loaiThuocService;
 
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")

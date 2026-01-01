@@ -1,10 +1,12 @@
-package com.pma.drug.service;
+package com.pma.drug.service.impl;
 
 import com.pma.drug.dto.DonViTinhRequest;
 import com.pma.drug.entity.DonViTinh;
 import com.pma.drug.exception.ResourceNotFoundException;
 import com.pma.drug.exception.ValidationException;
 import com.pma.drug.repository.DonViTinhRepository;
+import com.pma.drug.service.IDonViTinhService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,10 +21,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DonViTinhService {
+public class DonViTinhService implements IDonViTinhService {
     
     private final DonViTinhRepository donViTinhRepository;
     
+    @Override
     @Transactional
     public DonViTinh createDonViTinh(DonViTinhRequest request) {
         log.info("Đang tạo đơn vị tính mới: {}", request.getMaDonVi());
@@ -37,7 +40,8 @@ public class DonViTinhService {
         
         return donViTinhRepository.save(donViTinh);
     }
-    
+
+    @Override
     @Transactional
     public DonViTinh updateDonViTinh(String maDonVi, DonViTinhRequest request) {
         log.info("Đang cập nhật đơn vị tính: {}", maDonVi);
@@ -49,18 +53,21 @@ public class DonViTinhService {
         
         return donViTinhRepository.save(donViTinh);
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public DonViTinh getDonViTinh(String maDonVi) {
         return donViTinhRepository.findById(maDonVi)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn vị tính với mã: " + maDonVi));
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public List<DonViTinh> getAllDonViTinh() {
         return donViTinhRepository.findAll();
     }
-    
+
+    @Override
     @Transactional(readOnly = true)
     public Page<DonViTinh> searchDonViTinh(String keyword, int page, int size) {
 		log.info("Đang tìm kiếm đơn vị tính với từ khóa: {}", keyword);
@@ -72,7 +79,8 @@ public class DonViTinhService {
 		
 		return donViTinhRepository.findByTenDonViContainingIgnoreCase(keyword, pageable);
 	}
-    
+
+    @Override
     @Transactional
     public void deleteDonViTinh(String maDonVi) {
         log.info("Đang xóa đơn vị tính: {}", maDonVi);

@@ -3,7 +3,8 @@ package com.pma.inventory.controller;
 import com.pma.inventory.dto.ApiResponse;
 import com.pma.inventory.dto.KhoRequest;
 import com.pma.inventory.dto.KhoResponse;
-import com.pma.inventory.service.KhoService;
+import com.pma.inventory.service.IKhoService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ import java.util.List;
 @Slf4j
 public class KhoController {
     
-    private final KhoService khoService;
+    private final IKhoService khoService;
     
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
