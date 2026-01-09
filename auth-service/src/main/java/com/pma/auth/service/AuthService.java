@@ -12,129 +12,145 @@ import com.pma.auth.repository.TaiKhoanRepository;
 import com.pma.auth.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService implements IAuthService {
-    
-    private final TaiKhoanRepository taiKhoanRepository;
-    private final NhanVienRepository nhanVienRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
-    
-    @Override
-    @Transactional
-    public String register(RegisterRequest request) {
-        log.info("Đang xử lý đăng ký cho tài khoản: {}", request.getTenDangNhap());
-        
-        // Kiểm tra tài khoản đã tồn tại
-        if (taiKhoanRepository.existsByTenDangNhap(request.getTenDangNhap())) {
-            throw new ValidationException("Tên đăng nhập đã tồn tại");
-        }
-        
-        // Kiểm tra mã nhân viên đã tồn tại
-        if (nhanVienRepository.existsById(request.getMaNV())) {
-            throw new ValidationException("Mã nhân viên đã tồn tại");
-        }
-        
-        // Tạo nhân viên mới
-        NhanVien nhanVien = new NhanVien();
-        nhanVien.setMaNV(request.getMaNV());
-        nhanVien.setHoTen(request.getHoTen());
-        nhanVien.setGioiTinh(request.getGioiTinh());
-        nhanVien.setNgaySinh(request.getNgaySinh());
-        nhanVien.setSoDienThoai(request.getSoDienThoai());
-        nhanVien.setDiaChi(request.getDiaChi());
-        nhanVien.setVaiTro(request.getVaiTro() != null ? request.getVaiTro() : "USER");
-        nhanVienRepository.save(nhanVien);
-        
-        // Tạo tài khoản mới
-        TaiKhoan taiKhoan = new TaiKhoan();
-        taiKhoan.setTenDangNhap(request.getTenDangNhap());
-        taiKhoan.setMatKhau(passwordEncoder.encode(request.getMatKhau()));
-        taiKhoan.setNhanVien(nhanVien);
-        taiKhoan.setTrangThai("ACTIVE");
-        taiKhoanRepository.save(taiKhoan);
-        
-        log.info("Đăng ký thành công cho tài khoản: {}", request.getTenDangNhap());
-        
-        // Tạo token cho người dùng mới
-        return jwtUtil.generateToken(taiKhoan.getTenDangNhap(), 
-                                     nhanVien.getMaNV(), 
-                                     nhanVien.getVaiTro());
-    }
 
-    @Override
-    @Transactional(readOnly = true)
-    public String login(LoginRequest request) {
-        log.info("Đang xử lý đăng nhập cho tài khoản: {}", request.getTenDangNhap());
-        
-        // Tìm tài khoản
-        TaiKhoan taiKhoan = taiKhoanRepository.findByTenDangNhap(request.getTenDangNhap())
-                .orElseThrow(() -> new UnauthorizedException("Tên đăng nhập hoặc mật khẩu không đúng"));
-        
-        // Kiểm tra mật khẩu
-        if (!passwordEncoder.matches(request.getMatKhau(), taiKhoan.getMatKhau())) {
-            throw new UnauthorizedException("Tên đăng nhập hoặc mật khẩu không đúng");
-        }
-        
-        // Kiểm tra trạng thái tài khoản
-        if (!"ACTIVE".equals(taiKhoan.getTrangThai())) {
-            throw new UnauthorizedException("Tài khoản đã bị khóa hoặc không hoạt động");
-        }
-        
-        log.info("Đăng nhập thành công cho tài khoản: {}", request.getTenDangNhap());
-        
-        // Tạo token
-        return jwtUtil.generateToken(taiKhoan.getTenDangNhap(), 
-                                     taiKhoan.getNhanVien().getMaNV(), 
-                                     taiKhoan.getNhanVien().getVaiTro());
-    }
+	private final TaiKhoanRepository taiKhoanRepository;
+	private final NhanVienRepository nhanVienRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final RedisTemplate<String, Object> redisTemplate;
+	private final JwtUtil jwtUtil;
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserDetailsResponse verifyToken(String token) {
-        log.info("Đang xác thực token");
-        
-        // Validate token
-        if (!jwtUtil.validateToken(token)) {
-            throw new UnauthorizedException("Token không hợp lệ hoặc đã hết hạn");
-        }
-        
-        // Extract thông tin từ token
-        String tenDangNhap = jwtUtil.extractUsername(token);
-        String maNV = jwtUtil.extractMaNV(token);
-        String vaiTro = jwtUtil.extractVaiTro(token);
-        
-        // Tìm tài khoản để lấy thông tin đầy đủ
-        TaiKhoan taiKhoan = taiKhoanRepository.findByTenDangNhap(tenDangNhap)
-                .orElseThrow(() -> new UnauthorizedException("Người dùng không tồn tại"));
-        
-        // Kiểm tra trạng thái tài khoản
-        if (!"ACTIVE".equals(taiKhoan.getTrangThai())) {
-            throw new UnauthorizedException("Tài khoản đã bị khóa hoặc không hoạt động");
-        }
-        
-        log.info("Token hợp lệ cho người dùng: {}", tenDangNhap);
-        
-        // Trả về thông tin người dùng
-        return new UserDetailsResponse(
-                tenDangNhap,
-                maNV,
-                taiKhoan.getNhanVien().getHoTen(),
-                vaiTro,
-                taiKhoan.getTrangThai()
-        );
-    }
+	@Override
+	@Transactional
+	public String register(RegisterRequest request) {
+		log.info("Đang xử lý đăng ký cho tài khoản: {}", request.getTenDangNhap());
 
-    @Override
-    @Transactional(readOnly = true)
-    public NhanVien getNhanVienByMaNV(String maNV) {
-		return nhanVienRepository.findById(maNV)
-				.orElseThrow(() -> new ValidationException("Nhân viên không tồn tại"));
+		// Kiểm tra tài khoản đã tồn tại
+		if (taiKhoanRepository.existsByTenDangNhap(request.getTenDangNhap())) {
+			throw new ValidationException("Tên đăng nhập đã tồn tại");
+		}
+
+		// Kiểm tra mã nhân viên đã tồn tại
+		if (nhanVienRepository.existsById(request.getMaNV())) {
+			throw new ValidationException("Mã nhân viên đã tồn tại");
+		}
+
+		// Tạo nhân viên mới
+		NhanVien nhanVien = new NhanVien();
+		nhanVien.setMaNV(request.getMaNV());
+		nhanVien.setHoTen(request.getHoTen());
+		nhanVien.setGioiTinh(request.getGioiTinh());
+		nhanVien.setNgaySinh(request.getNgaySinh());
+		nhanVien.setSoDienThoai(request.getSoDienThoai());
+		nhanVien.setDiaChi(request.getDiaChi());
+		nhanVien.setVaiTro(request.getVaiTro() != null ? request.getVaiTro() : "USER");
+		nhanVienRepository.save(nhanVien);
+
+		// Tạo tài khoản mới
+		TaiKhoan taiKhoan = new TaiKhoan();
+		taiKhoan.setTenDangNhap(request.getTenDangNhap());
+		taiKhoan.setMatKhau(passwordEncoder.encode(request.getMatKhau()));
+		taiKhoan.setNhanVien(nhanVien);
+		taiKhoan.setTrangThai("ACTIVE");
+		taiKhoanRepository.save(taiKhoan);
+
+		log.info("Đăng ký thành công cho tài khoản: {}", request.getTenDangNhap());
+
+		// Tạo token cho người dùng mới
+		return jwtUtil.generateToken(taiKhoan.getTenDangNhap(), nhanVien.getMaNV(), nhanVien.getVaiTro());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public String login(LoginRequest request) {
+		log.info("Đang xử lý đăng nhập cho tài khoản: {}", request.getTenDangNhap());
+
+		// Tìm tài khoản
+		TaiKhoan taiKhoan = taiKhoanRepository.findByTenDangNhap(request.getTenDangNhap())
+				.orElseThrow(() -> new UnauthorizedException("Tên đăng nhập hoặc mật khẩu không đúng"));
+
+		// Kiểm tra mật khẩu
+		if (!passwordEncoder.matches(request.getMatKhau(), taiKhoan.getMatKhau())) {
+			throw new UnauthorizedException("Tên đăng nhập hoặc mật khẩu không đúng");
+		}
+
+		// Kiểm tra trạng thái tài khoản
+		if (!"ACTIVE".equals(taiKhoan.getTrangThai())) {
+			throw new UnauthorizedException("Tài khoản đã bị khóa hoặc không hoạt động");
+		}
+
+		log.info("Đăng nhập thành công cho tài khoản: {}", request.getTenDangNhap());
+
+		// Tạo token
+		return jwtUtil.generateToken(taiKhoan.getTenDangNhap(), taiKhoan.getNhanVien().getMaNV(),
+				taiKhoan.getNhanVien().getVaiTro());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public UserDetailsResponse verifyToken(String token) {
+		log.info("Đang xác thực token");
+
+		String redisKey = "auth:token:" + DigestUtils.md5DigestAsHex(token.getBytes());
+
+		// Check redis
+		UserDetailsResponse cachedUserDetails = (UserDetailsResponse) redisTemplate.opsForValue().get(redisKey);
+
+		if (cachedUserDetails != null) {
+			log.info("Token đã được xác thực trước đó, lấy thông tin từ Redis cho người dùng: {}",
+					cachedUserDetails.getTenDangNhap());
+			return cachedUserDetails;
+		}
+
+		// Validate token
+		if (!jwtUtil.validateToken(token)) {
+			throw new UnauthorizedException("Token không hợp lệ hoặc đã hết hạn");
+		}
+
+		// Extract thông tin từ token
+		String tenDangNhap = jwtUtil.extractUsername(token);
+		String maNV = jwtUtil.extractMaNV(token);
+		String vaiTro = jwtUtil.extractVaiTro(token);
+
+		// Tìm tài khoản để lấy thông tin đầy đủ
+		TaiKhoan taiKhoan = taiKhoanRepository.findByTenDangNhap(tenDangNhap)
+				.orElseThrow(() -> new UnauthorizedException("Người dùng không tồn tại"));
+
+		// Kiểm tra trạng thái tài khoản
+		if (!"ACTIVE".equals(taiKhoan.getTrangThai())) {
+			throw new UnauthorizedException("Tài khoản đã bị khóa hoặc không hoạt động");
+		}
+
+		log.info("Token hợp lệ cho người dùng: {}", tenDangNhap);
+
+		// Lưu thông tin người dùng vào Redis với thời gian hết hạn
+		long ttl = jwtUtil.extractExpiration(token).getTime() - System.currentTimeMillis();
+
+		UserDetailsResponse userDetails = new UserDetailsResponse(tenDangNhap, maNV, taiKhoan.getNhanVien().getHoTen(),
+				vaiTro, taiKhoan.getTrangThai());
+
+		log.info("Lưu thông tin người dùng vào Redis với TTL: {} ms", ttl);
+		redisTemplate.opsForValue().set(redisKey, userDetails, ttl, TimeUnit.MILLISECONDS);
+
+		// Trả về thông tin người dùng
+		return userDetails;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public NhanVien getNhanVienByMaNV(String maNV) {
+		return nhanVienRepository.findById(maNV).orElseThrow(() -> new ValidationException("Nhân viên không tồn tại"));
 	}
 }

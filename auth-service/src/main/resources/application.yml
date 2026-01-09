@@ -9,6 +9,10 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
   h2:
     console:
       enabled: true

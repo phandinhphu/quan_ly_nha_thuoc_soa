@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis:7
+    container_name: pma-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - pma-network
+
+  redis-insight:
+    image: redis/redisinsight
+    container_name: pma-redis-insight
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
+    networks:
+      - pma-network
+
   eureka-server:
     build:
       context: .
@@ -46,6 +64,8 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - SPRING_APPLICATION_NAME=auth-service
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
     depends_on:
       eureka-server:
         condition: service_healthy
@@ -132,6 +152,31 @@ services:
       drug-service:
         condition: service_started
       inventory-service:
+        condition: service_started
+    restart: on-failure
+
+  reporter-service:
+    build:
+      context: .
+      dockerfile: reporter-service/Dockerfile
+    container_name: pma-reporter-service
+    ports:
+      - "8086:8086"
+    networks:
+      - pma-network
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=reporter-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      drug-service:
+        condition: service_started
+      inventory-service:
+        condition: service_started
+      sales-service:
         condition: service_started
     restart: on-failure
 
