@@ -33,7 +33,7 @@ spring:
 # JWT Configuration
 jwt:
   secret: pma-auth-service-secret-key-for-jwt-token-generation-and-validation-2024
-  expiration: 86400000  # 24 hours in milliseconds
+  expiration: 1800000 # 30 minutes in milliseconds
 
 eureka:
   client:
